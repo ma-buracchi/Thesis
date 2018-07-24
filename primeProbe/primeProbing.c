@@ -169,12 +169,16 @@ int main(int argn, char *argv[]) {
 		// con il piu alto numero di occorrenze e lo confronto con il segreto
 		// assicurandomi che ci sia almeno una occorrenza
 		if (results[index] > 0
-				&& index == secret[userUnderAttack] / precision) {
-			printf("OK %d -> %d\n", index, secret[userUnderAttack] / precision);
+				&& index * precision - delta < secret[userUnderAttack]
+				&& index * precision + delta > secret[userUnderAttack]) {
+			printf("OK: predizione tra %d e %d, segreto = %d\n",
+					index * precision - delta, index * precision + delta,
+					secret[userUnderAttack]);
 			ok++;
 		} else {
-			printf("ERROR %d -> %d\n", index,
-					secret[userUnderAttack] / precision);
+			printf("ERROR: predizione tra %d e %d, segreto = %d\n",
+					index * precision - delta, index * precision + delta,
+					secret[userUnderAttack]);
 			error++;
 		}
 	}
