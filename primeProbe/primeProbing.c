@@ -103,7 +103,7 @@ int main(int argn, char *argv[]) {
 		// per ogni run
 		for (int j = 0; j < numberOfRuns; j++) {
 
-			for (int l = 0; l < SIZE; l += delta) {
+			for (int l = 1; l < SIZE; l += delta) {
 
 				//addestro il branch predictor
 				for (int i = 1; i < 10; i++) {
@@ -169,8 +169,8 @@ int main(int argn, char *argv[]) {
 		// con il piu alto numero di occorrenze e lo confronto con il segreto
 		// assicurandomi che ci sia almeno una occorrenza
 		if (results[index] > 0
-				&& index * precision - delta < secret[userUnderAttack]
-				&& index * precision + delta > secret[userUnderAttack]) {
+				&& index * precision - delta <= secret[userUnderAttack]
+				&& index * precision + delta >= secret[userUnderAttack]) {
 			printf("OK: predizione tra %d e %d, segreto = %d\n",
 					index * precision - delta, index * precision + delta,
 					secret[userUnderAttack]);
