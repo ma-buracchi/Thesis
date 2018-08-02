@@ -138,8 +138,7 @@ int main(int argn, char *argv[]) {
 				if ((int) time2 <= cacheHitThreshold) {
 					if (debug) {
 						printf("round %d - time = %d results[%d] %d ", j,
-								(int) time2, l / precision,
-								results[l / precision]);
+								(int) time2, l / precision, results[l / precision]);
 					}
 					results[l / precision]++;
 					if (debug) {
@@ -168,17 +167,21 @@ int main(int argn, char *argv[]) {
 		// stampo il risultato confrontando il candidato
 		// con il piu alto numero di occorrenze e lo confronto con il segreto
 		// assicurandomi che ci sia almeno una occorrenza
-		if (results[index] > 0
-				&& index * precision - delta <= secret[userUnderAttack]
-				&& index * precision + delta >= secret[userUnderAttack]) {
-			printf("OK: predizione tra %d e %d, segreto = %d\n",
-					index * precision - delta, index * precision + delta,
-					secret[userUnderAttack]);
+		int rangeMax = index * precision + delta;
+		int rangeMin;
+		if (index * precision - delta <= 0) {
+			rangeMin = 0;
+		} else {
+			rangeMin = index * precision - delta;
+		}
+		if (results[index] > 0 && rangeMin <= secret[userUnderAttack]
+				&& rangeMax >= secret[userUnderAttack]) {
+			printf("OK: predizione tra %d e %d, segreto = %d\n", rangeMin,
+					rangeMax, secret[userUnderAttack]);
 			ok++;
 		} else {
-			printf("ERROR: predizione tra %d e %d, segreto = %d\n",
-					index * precision - delta, index * precision + delta,
-					secret[userUnderAttack]);
+			printf("ERROR: predizione tra %d e %d, segreto = %d\n", rangeMin,
+					rangeMax, secret[userUnderAttack]);
 			error++;
 		}
 	}
