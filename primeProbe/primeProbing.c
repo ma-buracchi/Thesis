@@ -55,18 +55,20 @@ int main(int argn, char *argv[]) {
 		exit(1);
 	}
 
+	// parametri
 	int numberOfRuns = strtol(argv[1], NULL, 10); // numero di run per ogni test
 	int numberOfTest = strtol(argv[2], NULL, 10); // numero di test
 	int cacheHitThreshold = strtol(argv[3], NULL, 10); // soglia per cache hit
-	int precision = strtol(argv[4], NULL, 10); // precisione dei risultati
+	int precisionLoss = strtol(argv[4], NULL, 10); // precisione dei risultati
 
 	int debug = 0; // modalita con stampe
 	int blocks = sizeof(array1[0]) * 8; // numero di bit occupati da ogni posizione dell'array
 	int delta = CACHELINE / blocks; // numero di elementi in una line
 	int class = SIZE / delta + 1; // classi di risultati
 
-	int ok = 0; // contatore di OK
-	int error = 0; // contatore di ERROR
+	// contatori
+	int ok = 0;
+	int error = 0;
 	int noHit = 0;
 
 	int results[class]; // array risultati
@@ -164,11 +166,11 @@ int main(int argn, char *argv[]) {
 		// con il piu alto numero di occorrenze e lo confronto con il segreto
 		// assicurandomi che ci sia almeno una occorrenza
 		int rangeMax =
-				((index + 1) * delta + (precision * delta) >= SIZE) ?
-						SIZE : (index + 1) * delta + (precision * delta);
+				((index + 1) * delta + (precisionLoss * delta) >= SIZE) ?
+						SIZE : (index + 1) * delta + (precisionLoss * delta);
 		int rangeMin =
-				((index - 1) * delta - (precision * delta) <= 0) ?
-						0 : (index - 1) * delta - (precision * delta);
+				((index - 1) * delta - (precisionLoss * delta) <= 0) ?
+						0 : (index - 1) * delta - (precisionLoss * delta);
 
 		if (results[index] > 0 && rangeMin <= secret[userUnderAttack]
 				&& rangeMax >= secret[userUnderAttack]) {
@@ -176,11 +178,11 @@ int main(int argn, char *argv[]) {
 					rangeMax, secret[userUnderAttack]);
 			ok++;
 		} else if (results[index] == 0) {
-			printf("*****NO-HIT: nessuna hit rilevata in %d tentativi *****\n",
+			printf("***** NO-HIT: nessuna hit rilevata in %d tentativi *****\n",
 					numberOfRuns);
 			noHit++;
 		} else {
-			printf("*****ERROR: predizione tra %d e %d, segreto = %d *****\n", rangeMin,
+			printf("***** ERROR: predizione tra %d e %d, segreto = %d *****\n", rangeMin,
 					rangeMax, secret[userUnderAttack]);
 			error++;
 		}
