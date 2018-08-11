@@ -180,7 +180,7 @@ int main(int argn, char *argv[]) {
 					numberOfRuns);
 			noHit++;
 		} else {
-			printf("ERROR: predizione tra %d e %d, segreto = %d\n", rangeMin,
+			printf("*****ERROR: predizione tra %d e %d, segreto = %d *****\n", rangeMin,
 					rangeMax, secret[userUnderAttack]);
 			error++;
 		}
