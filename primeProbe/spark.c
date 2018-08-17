@@ -45,7 +45,7 @@ int main(int argn, char *argv[]) {
 	// 3 - cache hit threshold
 
 	if (argn - 1 != 4) {
-		printf("Illegal number of arguments. It must be 4 (#round, #test, #threshold, precision\n");
+		printf("Illegal number of arguments. It must be 4 (#round, #test, #threshold, precisionLoss\n");
 		exit(1);
 	}
 
