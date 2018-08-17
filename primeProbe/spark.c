@@ -1,5 +1,5 @@
 /*
- * password.c
+ * spark.c
  *
  *  Created on: 02 lug 2018
  *      Author: Marco
@@ -9,13 +9,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <time.h>
-
-#ifdef _MSC_VER
-#include <intrin.h> // per usare rdtscp e clflush
-#pragma optimize("gt",on)
-#else
 #include <x86intrin.h> // per usare rdtscp e clflush
-#endif
 
 /********************************************************************
  Codice vittima
