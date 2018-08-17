@@ -56,7 +56,6 @@ int main(int argn, char *argv[]) {
 	int cacheHitThreshold = strtol(argv[3], NULL, 10); // soglia per cache hit
 	int precisionLoss = strtol(argv[4], NULL, 10); // precisione dei risultati
 
-	int debug = 0; // modalita con stampe
 	int blocks = sizeof(array2[0]) * 8; // numero di bit occupati da ogni posizione dell'array
 	int delta = CACHELINE / blocks; // numero di elementi in una line
 	int class = SIZE / delta + 1; // classi di risultati
@@ -129,14 +128,7 @@ int main(int argn, char *argv[]) {
 				// aggiorno la posizione corrispondente di results
 				// se il tempo < della soglia
 				if ((int) time2 <= cacheHitThreshold) {
-					if (debug) {
-						printf("round %d - time = %d results[%d] %d ", j,
-								(int) time2, l, results[l]);
-					}
 					results[l]++;
-					if (debug) {
-						printf("-> %d\n", results[l]);
-					}
 				}
 			}
 		}
@@ -145,12 +137,6 @@ int main(int argn, char *argv[]) {
 		int max = -1;
 		int index = -1;
 		for (int i = 0; i < class; i++) {
-			if (debug) {
-				if (results[i] > 0) {
-					printf("results [%d] = %d\n", i, results[i]);
-				}
-			}
-
 			if (results[i] >= max) {
 				max = results[i];
 				index = i;
