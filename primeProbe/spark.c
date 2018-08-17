@@ -23,7 +23,7 @@ unsigned int array1[SIZE];
 uint8_t unused3[64];
 unsigned int passwordDigest[SIZE];
 
-uint8_t temp = 0; /* Used so compiler won’t optimize out victim_function() */
+uint8_t temp = 0; /* per non far ottimizzare victim_function() dal compilatore */
 
 void victim_function(int userID, int pwd) {
 	if (pwd == passwordDigest[userID]) {
@@ -45,7 +45,7 @@ int main(int argn, char *argv[]) {
 	// 3 - cache hit threshold
 
 	if (argn - 1 != 4) {
-		printf("Numero inesatto di argomenti (#round #test #threshold debug\n");
+		printf("Illegal number of arguments. It must be 4 (#round, #test, #threshold, precision\n");
 		exit(1);
 	}
 
@@ -168,22 +168,22 @@ int main(int argn, char *argv[]) {
 
 		if (results[index] > 0 && rangeMin <= secret[userUnderAttack]
 				&& rangeMax >= secret[userUnderAttack]) {
-			printf("OK: predizione tra %d e %d, segreto = %d\n", rangeMin,
+			printf("OK: prediction between %d and %d, secret = %d\n", rangeMin,
 					rangeMax, secret[userUnderAttack]);
 			ok++;
 		} else if (results[index] == 0) {
-			printf("***** NO-HIT: nessuna hit rilevata in %d tentativi *****\n",
+			printf("***** NO-HIT: detected 0 hit in %d rounds *****\n",
 					numberOfRuns);
 			noHit++;
 		} else {
-			printf("***** ERROR: predizione tra %d e %d, segreto = %d *****\n", rangeMin,
+			printf("***** ERROR: prediction between %d and %d, secret = %d\n", rangeMin,
 					rangeMax, secret[userUnderAttack]);
 			error++;
 		}
 	}
 
 // stampo il conteggio totale degli errori e degli ok
-	printf("***TOTALI***\nOK -> %d\nNO-HIT -> %d\nERROR -> %d\n", ok, noHit, error);
+	printf("***TOTAL***\nOK -> %d\nNO-HIT -> %d\nERROR -> %d\n", ok, noHit, error);
 
 	return (0);
 }
