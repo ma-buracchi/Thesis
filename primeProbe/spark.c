@@ -169,11 +169,11 @@ int main(int argn, char *argv[]) {
 					rangeMax, secret[userUnderAttack]);
 			ok++;
 		} else if (results[index] == 0) {
-			printf("***** NO-HIT: detected 0 hit in %d rounds *****\n",
+			printf("+++++ NO-HIT: detected 0 hit in %d rounds +++++\n",
 					numberOfRuns);
 			noHit++;
 		} else {
-			printf("***** ERROR: prediction between %d and %d, secret = %d\n",
+			printf("----- ERROR: prediction between %d and %d, secret = %d -----\n",
 					rangeMin, rangeMax, secret[userUnderAttack]);
 			error++;
 		}
