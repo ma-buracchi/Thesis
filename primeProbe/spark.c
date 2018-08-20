@@ -99,7 +99,7 @@ int main(int argn, char *argv[]) {
 			for (int l = 1; l <= class; l++) {
 
 				//addestro il branch predictor
-				for (int i = 1; i < 10; i++) {
+				for (int i = 0; i < 3; i++) {
 					victim_function(1, passwordDigest[1]);
 				}
 
