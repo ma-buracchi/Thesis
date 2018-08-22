@@ -149,8 +149,8 @@ int main(int argn, char *argv[]) {
 				((index + 1 + precisionLoss) * delta >= SIZE) ?
 						SIZE : (index + 1 + precisionLoss) * delta;
 		int rangeMin =
-				((index - 1 + precisionLoss) * delta <= 0) ?
-						0 : (index - 1 + precisionLoss) * delta;
+				((index - 1 - precisionLoss) * delta <= 0) ?
+						0 : (index - 1 - precisionLoss) * delta;
 
 		if (results[index] > 0 && rangeMin <= secret[userUnderAttack]
 				&& rangeMax >= secret[userUnderAttack]) {
