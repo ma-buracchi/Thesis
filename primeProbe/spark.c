@@ -88,6 +88,8 @@ int main(int argn, char *argv[]) {
 			secret[i] = rand() % SIZE;
 		}
 
+		int wrongPassword = passwordDigest[userUnderAttack] + 1;
+
 		// inizializzo a 0 l'array risultati
 		for (int i = 0; i < class; i++) {
 			results[i] = 0;
@@ -113,7 +115,8 @@ int main(int argn, char *argv[]) {
 				}
 
 				// richiamo la funzione vittima con l'ID da attaccare
-				victim_function(userUnderAttack, 1);
+				// e la password sbagliata
+				victim_function(userUnderAttack, wrongPassword);
 
 				for (volatile int z = 0; z < 100; z++) {
 				}
