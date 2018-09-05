@@ -12,6 +12,7 @@
 #include <x86intrin.h> // per usare rdtscp e clflush
 
 /*************** Codice vittima ***************/
+
 #define SIZE 3000
 uint8_t unused1[64];
 unsigned int secret[SIZE];
@@ -69,7 +70,6 @@ int main(int argn, char *argv[]) {
 
 	// array risultati
 	int results[class];
-
 	unsigned int timeReg;
 	register uint64_t time1, time2;
 
