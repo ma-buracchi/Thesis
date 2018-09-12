@@ -121,6 +121,8 @@ int main(int argn, char *argv[]) {
 			// e la password sbagliata
 			victim_function(userUnderAttack, wrongPassword);
 
+			_mm_lfence();
+
 			for (int l = 1; l <= class; l++) {
 
 				// calcolo il tempo di accesso alla posizione l
